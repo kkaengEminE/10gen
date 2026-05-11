@@ -21,7 +21,7 @@ const SHIKOKU =
   'M155,370 L165,375 175,380 180,390 175,395 165,398 155,395 148,388 150,378 155,370';
 
 export function JapanMap({
-  position = [-4, 1.5, 0],
+  position = [-5, 1.5, 0],
   highlightPosition,
   highlightColor,
   territoryName,
@@ -34,87 +34,157 @@ export function JapanMap({
       <div
         className="pointer-events-none select-none"
         style={{
-          animation: 'fadeIn 0.6s ease-out 0.2s both',
+          animation: 'scaleIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both',
         }}
       >
         <svg
           viewBox="0 0 400 500"
-          width="220"
-          style={{ opacity: 0.85 }}
+          width="280"
+          style={{ overflow: 'visible' }}
         >
-          {/* Islands */}
+          {/* Map title */}
+          <text
+            x="200"
+            y="60"
+            textAnchor="middle"
+            fill="#b91c1c"
+            fontSize="16"
+            fontWeight="bold"
+            fontFamily="Noto Sans JP, sans-serif"
+            opacity="0.7"
+          >
+            日本地図
+          </text>
+
+          {/* Islands — with drawing animation */}
           <polyline
             points={HONSHU}
             fill="none"
             stroke="#b91c1c"
-            strokeWidth="1.8"
+            strokeWidth="2.2"
             strokeLinejoin="round"
             strokeLinecap="round"
             opacity="0.5"
+            className="animate-draw-line"
           />
           <polyline
             points={HOKKAIDO}
             fill="none"
             stroke="#b91c1c"
-            strokeWidth="1.8"
+            strokeWidth="2.2"
             strokeLinejoin="round"
             strokeLinecap="round"
             opacity="0.5"
+            className="animate-draw-line"
+            style={{ animationDelay: '0.3s' }}
           />
           <polyline
             points={KYUSHU}
             fill="none"
             stroke="#b91c1c"
-            strokeWidth="1.8"
+            strokeWidth="2.2"
             strokeLinejoin="round"
             strokeLinecap="round"
             opacity="0.5"
+            className="animate-draw-line"
+            style={{ animationDelay: '0.5s' }}
           />
           <polyline
             points={SHIKOKU}
             fill="none"
             stroke="#b91c1c"
-            strokeWidth="1.8"
+            strokeWidth="2.2"
             strokeLinejoin="round"
             strokeLinecap="round"
             opacity="0.5"
+            className="animate-draw-line"
+            style={{ animationDelay: '0.6s' }}
           />
 
-          {/* Territory highlight — pulsing circle */}
-          <circle
-            cx={cx}
-            cy={cy}
-            r="28"
-            fill={highlightColor}
-            opacity="0.15"
-          >
-            <animate
-              attributeName="r"
-              values="28;35;28"
-              dur="2s"
-              repeatCount="indefinite"
-            />
-            <animate
-              attributeName="opacity"
-              values="0.15;0.08;0.15"
-              dur="2s"
-              repeatCount="indefinite"
-            />
-          </circle>
-          <circle cx={cx} cy={cy} r="6" fill={highlightColor} opacity="0.9" />
+          {/* Territory highlight — animated entrance */}
+          <g style={{ animation: 'popIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1s both' }}>
+            {/* Outer pulse */}
+            <circle
+              cx={cx}
+              cy={cy}
+              r="28"
+              fill={highlightColor}
+              opacity="0.15"
+            >
+              <animate
+                attributeName="r"
+                values="28;38;28"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="opacity"
+                values="0.15;0.05;0.15"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+            </circle>
 
-          {/* Territory name */}
-          <text
-            x={cx}
-            y={cy - 18}
-            textAnchor="middle"
-            fill={highlightColor}
-            fontSize="13"
-            fontWeight="bold"
-            fontFamily="Noto Sans JP, sans-serif"
-          >
-            {territoryName}
-          </text>
+            {/* Middle ring */}
+            <circle
+              cx={cx}
+              cy={cy}
+              r="16"
+              fill="none"
+              stroke={highlightColor}
+              strokeWidth="1.5"
+              opacity="0.4"
+            >
+              <animate
+                attributeName="r"
+                values="16;22;16"
+                dur="2.5s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="opacity"
+                values="0.4;0.15;0.4"
+                dur="2.5s"
+                repeatCount="indefinite"
+              />
+            </circle>
+
+            {/* Center dot */}
+            <circle cx={cx} cy={cy} r="6" fill={highlightColor} opacity="0.9" />
+
+            {/* Connection line from dot to label */}
+            <line
+              x1={cx}
+              y1={cy - 8}
+              x2={cx}
+              y2={cy - 28}
+              stroke={highlightColor}
+              strokeWidth="1.2"
+              opacity="0.5"
+            />
+
+            {/* Territory name with background */}
+            <rect
+              x={cx - 60}
+              y={cy - 52}
+              width="120"
+              height="22"
+              rx="4"
+              fill={highlightColor}
+              opacity="0.12"
+            />
+            <text
+              x={cx}
+              y={cy - 36}
+              textAnchor="middle"
+              fill={highlightColor}
+              fontSize="14"
+              fontWeight="bold"
+              fontFamily="Noto Sans JP, sans-serif"
+            >
+              {territoryName}
+            </text>
+          </g>
         </svg>
       </div>
     </Html>

@@ -24,9 +24,10 @@ export function TitleScreen() {
         >
           始める
         </button>
-        <p className="mt-4 text-xs text-tengen-ash/50">
-          WASD / Arrow keys to move &nbsp;|&nbsp; ◀ ▶ to navigate slides
-        </p>
+        <div className="mt-6 flex flex-col items-center gap-1 text-xs text-tengen-ash/50">
+          <p>WASD / Arrow keys to move &nbsp;|&nbsp; ◀ ▶ to navigate slides</p>
+          <p>Right-click drag to rotate view &nbsp;|&nbsp; Scroll to zoom</p>
+        </div>
       </div>
     </div>
   );

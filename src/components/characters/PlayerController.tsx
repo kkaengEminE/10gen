@@ -6,19 +6,21 @@ import type { InputState } from '@/hooks/useInput';
 
 const WALK_SPEED = 4;
 const BOUNDARY = 15;
-const SQ = Math.SQRT1_2;
 
 const tmpMove = new Vector3();
 
 interface PlayerControllerProps {
   inputRef: MutableRefObject<InputState>;
   positionRef: MutableRefObject<Vector3>;
+  /** Camera yaw so movement is always relative to the current view angle */
+  cameraYawRef: MutableRefObject<number>;
   active: boolean;
 }
 
 export function PlayerController({
   inputRef,
   positionRef,
+  cameraYawRef,
   active,
 }: PlayerControllerProps) {
   const groupRef = useRef<Group>(null);
@@ -44,9 +46,14 @@ export function PlayerController({
       iz /= len;
     }
 
-    // Screen-relative isometric mapping (camera at [15, 25, 15])
-    const wx = (ix + iz) * SQ;
-    const wz = (iz - ix) * SQ;
+    // Camera-relative movement: rotate input by the camera's azimuth angle
+    const yaw = cameraYawRef.current;
+    const sinY = Math.sin(yaw);
+    const cosY = Math.cos(yaw);
+    // "forward" on screen = toward where the camera is looking (away from camera)
+    // camera is at angle `yaw` from center, so forward = -sin(yaw), -cos(yaw) in world XZ
+    const wx = ix * cosY + iz * sinY;
+    const wz = iz * cosY - ix * sinY;
 
     tmpMove.set(wx * WALK_SPEED * dt, 0, wz * WALK_SPEED * dt);
     g.position.add(tmpMove);

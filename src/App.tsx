@@ -10,6 +10,7 @@ import { useInput } from '@/hooks/useInput';
 import { useIsTouch } from '@/hooks/useIsTouch';
 import { NavigationArrows } from '@/ui/NavigationArrows';
 import { SlideIndicator } from '@/ui/SlideIndicator';
+import { ZoomControls } from '@/ui/ZoomControls';
 import { TitleScreen } from '@/ui/TitleScreen';
 import { MobileControls } from '@/ui/MobileControls';
 import { usePresentationStore } from '@/store/presentationStore';
@@ -17,6 +18,7 @@ import { usePresentationStore } from '@/store/presentationStore';
 export default function App() {
   const inputRef = useInput();
   const playerPosRef = useRef(new Vector3(0, 0, 6));
+  const cameraYawRef = useRef(Math.PI / 4);
   const isTouch = useIsTouch();
   const phase = usePresentationStore((s) => s.phase);
 
@@ -32,9 +34,10 @@ export default function App() {
           <PlayerController
             inputRef={inputRef}
             positionRef={playerPosRef}
+            cameraYawRef={cameraYawRef}
             active={phase === 'presenting'}
           />
-          <CameraRig targetRef={playerPosRef} />
+          <CameraRig targetRef={playerPosRef} yawRef={cameraYawRef} />
         </Suspense>
       </Canvas>
 
@@ -43,6 +46,7 @@ export default function App() {
         <>
           <NavigationArrows />
           <SlideIndicator />
+          <ZoomControls />
         </>
       )}
 
